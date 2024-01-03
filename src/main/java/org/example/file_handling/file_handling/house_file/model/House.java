@@ -3,9 +3,11 @@ package org.example.file_handling.file_handling.house_file.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Comparator;
+
 @Data
 @Builder
-public class House implements Comparable {
+public class House implements Comparable{
     int squareFeet;
     int bedrooms;
     int bathrooms;
