@@ -8,12 +8,12 @@ import java.util.Comparator;
 @Data
 @Builder
 public class House implements Comparable{
-    int squareFeet;
-    int bedrooms;
-    int bathrooms;
-    String neighbourhood;
-    int year;
-    double price;
+  private   int squareFeet;
+    private int bedrooms;
+    private int bathrooms;
+    private String neighbourhood;
+    private int year;
+    private double price;
 
     @Override
     public String toString() {
