@@ -1,0 +1,81 @@
+package org.example.file_handling.file_handling.house_file.metrics;
+
+import org.example.file_handling.file_handling.house_file.model.BedroomsCount;
+import org.example.file_handling.file_handling.house_file.model.House;
+import org.example.file_handling.file_handling.house_file.model.NeighbourhoodCount;
+import org.example.file_handling.file_handling.house_file.report.json.JsonFileWriter;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class BedroomAndNeighbourhoodMetrics implements MetricsCollector {
+    @Override
+    public void collect(List<House> data) {
+    // How to collect
+    Map<Integer, List<House>> bedrooms = data.stream()
+            .collect(Collectors.groupingBy(House::getBedrooms));
+
+    // bedrooms
+    // 2: houses (5k)
+    // "Rural", houses (1k)
+    // "Urban", houses (2k)
+    // "Suburb", houses (2k)
+    // 3: houses (10k)
+    // "Rural", houses (1k)
+    // "Urban", houses (2k)
+    // "Suburb", houses (2k)
+    // 4: houses (7k)
+    // "Rural", houses (1k)
+    // "Urban", houses (2k)
+    // "Suburb", houses (2k)
+    // 5: houses (6k)
+    // "Rural", houses (1k)
+    // "Urban", houses (2k)
+    // "Suburb", houses (2k)
+
+        bedrooms.forEach((bhk, records) -> {
+        Map<String, List<House>> bhkNebours = records.stream().collect(Collectors.groupingBy(House::getNeighbourhood));
+        System.out.print(bhk + " BHK:" + records.size());
+        bhkNebours.forEach((k,v) -> System.out.print("["+ k+":"+ v.size()+"],"));
+        System.out.println();
+    });
+
+
+    // data
+    // bedrooms
+    // neighbourhoods
+
+    Map<Integer, NeighbourhoodCount> countData = new HashMap<>();
+        bedrooms.forEach((bhk, records) -> {
+        Map<String, List<House>> bhkNebours = records.stream().collect(Collectors.groupingBy(House::getNeighbourhood));
+        System.out.print(bhk + " BHK:" + records.size());
+        final NeighbourhoodCount neighbourhoodCount = NeighbourhoodCount.builder().total(records.size()).build();
+        bhkNebours.entrySet().forEach((entry) -> {
+            setValues(entry, neighbourhoodCount);
+        });
+        countData.put(bhk, neighbourhoodCount);
+    });
+
+    BedroomsCount bedroomsCount = BedroomsCount.builder().bedrooms(countData).build();
+        JsonFileWriter.write(bedroomsCount);
+
+    // 1) Build Object
+
+
+    // 2) Write Objects to JSON
+
+
+}
+    private static void setValues(Map.Entry<String, List<House>> entry, NeighbourhoodCount neighbourhoodCount) {
+        if("Rural".equals(entry.getKey())){
+            neighbourhoodCount.setRural(entry.getValue().size());
+        } else if("Suburb".equals(entry.getKey())){
+            neighbourhoodCount.setSuburb(entry.getValue().size());
+        } else if("Urban".equals(entry.getKey())){
+            neighbourhoodCount.setUrban(entry.getValue().size());
+        }
+    }
+
+}

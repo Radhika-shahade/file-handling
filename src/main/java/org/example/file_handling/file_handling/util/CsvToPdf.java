@@ -13,7 +13,6 @@ public class CsvToPdf {
     public static void main(String[] args) {
         generatePdf("src/main/resources/newPdf.pdf", "Hello, this is a simple PDF created using iText.");
     }
-
     private static void generatePdf(String filePath, String content) {
         Document document = new Document();
 

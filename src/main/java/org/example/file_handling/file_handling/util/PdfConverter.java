@@ -1,5 +1,6 @@
 package org.example.file_handling.file_handling.util;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -8,39 +9,33 @@ import com.opencsv.CSVReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 public class PdfConverter {
-    public static void main(String[] args) {
+
+    public static void convertCSVToPDF(String inputCSVFilePath, String outputPDFFilePath) {
         try {
-            String inputCSVFile = "src/main/resources/car_file/car.csv";
-            CSVReader reader = new CSVReader(new FileReader(inputCSVFile));
+            CSVReader reader = new CSVReader(new FileReader(inputCSVFilePath));
             String[] nextLine;
-            int lnNum = 0;
             Document pdf = new Document();
-            PdfWriter.getInstance(pdf, new FileOutputStream("src/main/resources/car.pdf"));
+            PdfWriter.getInstance(pdf, new FileOutputStream(outputPDFFilePath));
             pdf.open();
             PdfPTable table = new PdfPTable(6);
             PdfPCell tableCell;
+
             while ((nextLine = reader.readNext()) != null) {
-                lnNum++;
-                tableCell = new PdfPCell(new Phrase(nextLine[0]));
-                table.addCell(tableCell);
-                tableCell = new PdfPCell(new Phrase(nextLine[1]));
-                table.addCell(tableCell);
-                tableCell = new PdfPCell(new Phrase(nextLine[2]));
-                table.addCell(tableCell);
-                tableCell = new PdfPCell(new Phrase(nextLine[3]));
-                table.addCell(tableCell);
-                tableCell = new PdfPCell(new Phrase(nextLine[4]));
-                table.addCell(tableCell);
-                tableCell = new PdfPCell(new Phrase(nextLine[5]));
-                table.addCell(tableCell);
+                for (String value : nextLine) {
+                    tableCell = new PdfPCell(new Paragraph(value));
+                    table.addCell(tableCell);
+                }
             }
             pdf.add(table);
             pdf.close();
+            System.out.println("Conversion completed successfully!");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
+
+
 
 
 
